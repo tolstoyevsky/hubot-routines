@@ -147,7 +147,7 @@ exports.isAdmin = async function (robot, username) {
 
     return info.user.roles.indexOf('admin') !== -1
   } catch (err) {
-    robot.logger.error('Could not get user data with bot, ensure it has `view-full-other-user-info` permission', err)
+    exports.rave(robot, `Could not get user data with bot, ensure it has \`view-full-other-user-info\` permission:\n${err.name}\n${err.message}\n${err.stack}`)
   }
 }
 
