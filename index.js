@@ -1,4 +1,19 @@
+const nFetch = require('node-fetch')
 const moment = require('moment')
+
+/**
+ * Delays by the specified number of milliseconds.
+ *
+ * @param {number} ms - Number of milliseconds.
+ * @returns {Promise}
+ */
+module.exports.delay = (ms) => {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve()
+    }, ms)
+  })
+}
 
 /**
  * Checks if the specified date
@@ -81,4 +96,32 @@ exports.rave = function (robot, message) {
   formalizedMess += paddingLine + '\n' + borderLine + '\n'
   robot.logger.error(formalizedMess)
   return formalizedMess
+}
+
+/**
+ * Sends a request to the specified URL with retries.
+ *
+ * @param {string} url - Requested URL.
+ * @param {number} retries - Maximum number of retries.
+ * @param {number} retryDelay - Delay (in milliseconds) between retries.
+ * @returns {Promise}
+ */
+exports.retryFetch = (url, retries = 60, retryDelay = 1000) => {
+  return new Promise((resolve, reject) => {
+    const wrapper = n => {
+      nFetch(url)
+        .then(res => { resolve(res) })
+        .catch(async err => {
+          if (n > 0) {
+            console.log(`Retrying to request ${url}. ${n} attempts left.`)
+            await module.exports.delay(retryDelay)
+            wrapper(--n)
+          } else {
+            reject(err)
+          }
+        })
+    }
+
+    wrapper(retries)
+  })
 }
