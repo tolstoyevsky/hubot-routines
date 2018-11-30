@@ -6,5 +6,5 @@ A library containing the functions which could be useful in Hubot scripts develo
 
 ## Licensing
 
-hubot-viva-las-vegas is available under the [Apache License, Version 2.0](LICENSE).
+hubot-routines is available under the [Apache License, Version 2.0](LICENSE).
 
