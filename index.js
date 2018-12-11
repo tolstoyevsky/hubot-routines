@@ -2,6 +2,39 @@ const nFetch = require('node-fetch')
 const moment = require('moment')
 
 /**
+ * Builds a message with interactive buttons.
+ *
+ * @param {string} message - Text of the message (can be considered as a title).
+ * @param {Array} buttons - Array of the arrays which, in turn, contain pairs --
+ *                          the text of the button and a command which will be
+ *                          sent to the current channel when a user pushes
+ *                          the button.
+ * @returns {Object}
+ */
+module.exports.buildMessageWithButtons = (message, buttons) => {
+  var actions = []
+
+  buttons.forEach(value => {
+    actions.push({
+      'type': 'button',
+      'text': value[0],
+      'msg': value[1],
+      'msg_in_chat_window': true
+    })
+  })
+
+  return {
+    attachments: [
+      {
+        'title': message,
+        'temporary_buttons': true,
+        'actions': actions
+      }
+    ]
+  }
+}
+
+/**
  * Delays by the specified number of milliseconds.
  *
  * @param {number} ms - Number of milliseconds.

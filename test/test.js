@@ -40,6 +40,40 @@ const robot = {
 
 /* eslint-disable no-undef */
 describe('Function testing', () => {
+  it('Testing building messages with interactive buttons', () => {
+    var result
+
+    result = routines.buildMessageWithButtons('Hello', [
+      ['Say hello?', 'hello'],
+      ['Don\'t say hello', 'not saying hello']
+    ])
+
+    expected = {
+      attachments: [
+        {
+          'title': 'Hello',
+          'temporary_buttons': true,
+          'actions': [
+            {
+              'type': 'button',
+              'text': 'Say hello?',
+              'msg': 'hello',
+              'msg_in_chat_window': true
+            },
+            {
+              'type': 'button',
+              'text': 'Don\'t say hello',
+              'msg': 'not saying hello',
+              'msg_in_chat_window': true
+            }
+          ]
+        }
+      ]
+    }
+
+    expect(result).to.deep.equal(expected)
+  })
+
   it('Date validation testing', () => {
     var result
 
