@@ -49,6 +49,25 @@ module.exports.delay = (ms) => {
 }
 
 /**
+ * Check if the specified user exists.
+ *
+ * @param {Robot} robot - Hubot instance.
+ * @param {User} user - User instance.
+ * @returns {boolean}
+ */
+exports.doesUserExist = async (robot, user) => {
+  const list = await robot.adapter.api.get('users.list')
+
+  for (const item of list.users) {
+    if (item._id === user.id) {
+      return true
+    }
+  }
+
+  return false
+}
+
+/**
  * Checks if the specified date
  * 1. follows the format stored in the DATE_FORMAT constant;
  * 2. is a valid date.
@@ -84,6 +103,23 @@ exports.isAdmin = async function (robot, username) {
   } catch (err) {
     robot.logger.error('Could not get user data with bot, ensure it has `view-full-other-user-info` permission', err)
   }
+}
+
+/**
+ * Check if the specified user is active.
+ *
+ * @param {Robot} robot - Hubot instance.
+ * @param {string} user - User instance.
+ * @returns {boolean}
+ */
+exports.isUserActive = async (robot, user) => {
+  // It's necessary to get the users list instead of the specified user,
+  // because for some reason it causes the error which is not possible
+  // (at least superficially) to catch.
+  // TODO: solve the issue.
+  const list = await robot.adapter.api.get('users.list')
+  const findUser = list.users.find(item => item._id === user.id)
+  return findUser && findUser.active
 }
 
 /**
