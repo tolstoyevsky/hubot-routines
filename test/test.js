@@ -181,5 +181,35 @@ As of some one gently rapping, rapping at my chamber door.
 `
     )
   })
+
+  it('Testing presence of bot in channel or group', async () => {
+    let result
+    let robot = {}
+    robot.adapter = {}
+    robot.adapter.api = {}
+    robot.adapter.api.get = async () => {
+      return {
+        channels: [{
+          name: 'existingChannel1'
+        }, {
+          name: 'existingChannel2'
+        }],
+        groups: [{
+          name: 'existingGroup1'
+        }, {
+          name: 'existingGroup2'
+        }]
+      }
+    }
+
+    result = await routines.isBotIsInRoom(robot, 'existingChannel1')
+    expect(result).to.equal(true)
+
+    result = await routines.isBotIsInRoom(robot, 'existingGroup2')
+    expect(result).to.equal(true)
+
+    result = await routines.isBotIsInRoom(robot, 'existingRoom3')
+    expect(result).to.equal(false)
+  })
   /* eslint-enable no-undef */
 })
