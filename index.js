@@ -68,6 +68,22 @@ exports.doesUserExist = async (robot, user) => {
 }
 
 /**
+ * Check if the bot is in the specified channel or group.
+ * @param {Robot} robot - Hubot instance.
+ * @param {String} roomName - The searching room name.
+ * @return {Boolean}
+ */
+exports.isBotIsInRoom = async (robot, roomName) => {
+  const botChannels = await robot.adapter.api.get('channels.list.joined')
+  const botGroups = await robot.adapter.api.get('groups.list')
+
+  const chExists = botChannels.channels.find(item => item.name === roomName)
+  const grExists = botGroups.groups.find(item => item.name === roomName)
+
+  return !!(chExists || grExists)
+}
+
+/**
  * Checks if the specified date
  * 1. follows the format stored in the DATE_FORMAT constant;
  * 2. is a valid date.
