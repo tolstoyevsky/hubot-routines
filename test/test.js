@@ -211,5 +211,30 @@ As of some one gently rapping, rapping at my chamber door.
     result = await routines.isBotInRoom(robot, 'existingRoom3')
     expect(result).to.equal(false)
   })
+
+  it('Testing getting all existing users', async () => {
+    const existingUser = { _id: '_1a2b3c', id: '_1a2b3c', name: 'user', active: true }
+    const nonExistingUser = { _id: '_4d5f6g', id: '_4d5f6g', name: 'user2' }
+    const existingNonActiveUser = { _id: '_9z8x7y', id: '_9z8x7y', name: 'user3' }
+    const robot = {
+      brain: {
+        data: {
+          users: { _1a2b3c: existingUser, _4d5f6g: nonExistingUser, _9z8x7y: existingNonActiveUser }
+        }
+      },
+      adapter: {
+        api: {
+          get: () => {
+            return {
+              users: [existingUser]
+            }
+          }
+        }
+      }
+    }
+
+    result = await routines.getAllUsers(robot)
+    expect(result).to.deep.equal([existingUser])
+  })
   /* eslint-enable no-undef */
 })
