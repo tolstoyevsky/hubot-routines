@@ -67,6 +67,36 @@ exports.doesUserExist = async (robot, user) => {
   return false
 }
 
+exports.findUserById = async (robot, id) => {
+  const users = await exports.getAllUsers(robot)
+
+  return users.find(item => item._id === id || item.id === id)
+}
+
+exports.findUserByName = async (robot, username) => {
+  const users = await exports.getAllUsers(robot)
+
+  return users.find(item => item.name === username)
+}
+
+/**
+ * Get all active users.
+ *
+ * @param {Robot} robot - Hubot instance.
+ */
+exports.getAllUsers = function (robot) {
+  const allUsers = Object.values(robot.brain.data.users)
+    .map(user => {
+      return exports.isUserActive(robot, user).then((isActive) => {
+        return { user, isActive }
+      })
+    })
+
+  return (Promise.all(allUsers)
+    .catch(() => { exports.rave(robot, 'Can\'t filter users') })
+    .then(array => array.filter(user => user.isActive).map(item => item.user)))
+}
+
 /**
  * Check if the bot is in the specified channel or group.
  * @param {Robot} robot - Hubot instance.
