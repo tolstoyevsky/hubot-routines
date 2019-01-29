@@ -73,7 +73,7 @@ exports.doesUserExist = async (robot, user) => {
  * @param {String} roomName - The searching room name.
  * @return {Boolean}
  */
-exports.isBotIsInRoom = async (robot, roomName) => {
+exports.isBotInRoom = async (robot, roomName) => {
   const botChannels = await robot.adapter.api.get('channels.list.joined')
   const botGroups = await robot.adapter.api.get('groups.list')
 

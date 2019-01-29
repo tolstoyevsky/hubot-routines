@@ -202,13 +202,13 @@ As of some one gently rapping, rapping at my chamber door.
       }
     }
 
-    result = await routines.isBotIsInRoom(robot, 'existingChannel1')
+    result = await routines.isBotInRoom(robot, 'existingChannel1')
     expect(result).to.equal(true)
 
-    result = await routines.isBotIsInRoom(robot, 'existingGroup2')
+    result = await routines.isBotInRoom(robot, 'existingGroup2')
     expect(result).to.equal(true)
 
-    result = await routines.isBotIsInRoom(robot, 'existingRoom3')
+    result = await routines.isBotInRoom(robot, 'existingRoom3')
     expect(result).to.equal(false)
   })
   /* eslint-enable no-undef */
