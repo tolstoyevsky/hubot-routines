@@ -226,7 +226,7 @@ As of some one gently rapping, rapping at my chamber door.
         api: {
           get: () => {
             return {
-              users: [existingUser]
+              users: []
             }
           }
         }
@@ -234,7 +234,7 @@ As of some one gently rapping, rapping at my chamber door.
     }
 
     result = await routines.getAllUsers(robot)
-    expect(result).to.deep.equal([existingUser])
+    expect(result).to.deep.equal([])
   })
   /* eslint-enable no-undef */
 })
