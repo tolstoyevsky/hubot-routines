@@ -163,8 +163,20 @@ exports.isUserActive = async (robot, user) => {
   // because for some reason it causes the error which is not possible
   // (at least superficially) to catch.
   // TODO: solve the issue.
-  const list = await robot.adapter.api.get('users.list')
-  const findUser = list.users.find(item => item._id === user.id)
+  const list = []
+  const options = {
+    offset: 0,
+    count: 100
+  }
+  while (true) {
+    const result = await robot.adapter.api.get('users.list', options)
+
+    if (!result.users.length) break
+
+    list.push(...result.users)
+    options.offset += 100
+  }
+  const findUser = list.find(item => item._id === user.id)
   return findUser && findUser.active
 }
 
