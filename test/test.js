@@ -236,5 +236,118 @@ As of some one gently rapping, rapping at my chamber door.
     result = await routines.getAllUsers(robot)
     expect(result).to.deep.equal([])
   })
+
+  it('Testing checking is user have permissions', async () => {
+    const permissions = {
+      update: [
+        {
+          _id: 'access-permissions',
+          _updatedAt: '2018-11-28T11:55:49.106Z',
+          roles: [
+            'admin'
+          ]
+        }, {
+          _id: 'add-user-to-joined-room',
+          _updatedAt: '2018-11-28T11:55:49.106Z',
+          roles: [
+            'admin',
+            'moderator',
+            'owner'
+          ]
+        }
+      ],
+      remove: [],
+      success: true
+    }
+
+    const robot = {
+      adapter: {
+        api: {
+          get: async (method) => {
+            if (method === 'permissions.listAll') {
+              return permissions
+            }
+          }
+        }
+      }
+    }
+
+    let result
+
+    const adminUser = {
+      _id: 'nSYqWzZ4GsKTX4dyK',
+      name: 'admin',
+      roles: [
+        'admin'
+      ]
+    }
+
+    // Checking one success permission
+    result = await routines.hasPermissions(
+      robot,
+      adminUser,
+      'access-permissions'
+    )
+    expect(result).to.equal(true)
+
+    // Check two success permission
+    result = await routines.hasPermissions(
+      robot,
+      adminUser,
+      'access-permissions',
+      'add-user-to-joined-room'
+    )
+    expect(result).to.equal(true)
+
+    const moderatorUser = {
+      _id: 'nSYqWzZ4GsKTX4dyK',
+      name: 'moderator',
+      roles: [
+        'moderator'
+      ]
+    }
+
+    // Check one failed permission
+    result = await routines.hasPermissions(
+      robot,
+      moderatorUser,
+      'access-permissions'
+    )
+    expect(result).to.equal(false)
+
+    // Check one failed one success permission
+    result = await routines.hasPermissions(
+      robot,
+      moderatorUser,
+      'access-permissions',
+      'add-user-to-joined-room'
+    )
+    expect(result).to.equal(false)
+
+    const regularUser = {
+      _id: 'nSYqWzZ4GsKTX4dyK',
+      name: 'user',
+      roles: [
+        'user'
+      ]
+    }
+
+    // Check two failed permission
+    result = await routines.hasPermissions(
+      robot,
+      regularUser,
+      'access-permissions',
+      'add-user-to-joined-room'
+    )
+    expect(result).to.equal(false)
+
+    // Check unknown permission
+    result = await routines.hasPermissions(
+      robot,
+      regularUser,
+      'unknown-permission'
+    )
+    expect(result).to.equal(false)
+  })
   /* eslint-enable no-undef */
 })
