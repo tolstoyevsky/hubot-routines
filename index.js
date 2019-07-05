@@ -252,3 +252,30 @@ exports.retryFetch = (url, retries = 60, retryDelay = 1000) => {
     wrapper(retries)
   })
 }
+
+/**
+ * Checks if a particular user has specific permission.
+ *
+ * @param {Robot} robot - hubot instance.
+ * @param {User} user - user object.
+ * @param {String[]} permissions list of permission ids.
+ */
+exports.hasPermissions = async (robot, user, ...permissions) => {
+  if (!permissions.length) throw new Error('Requires a "permissions" argument.')
+  if (!user.roles) throw new Error('Missing "roles" user attribute.')
+
+  // List of all server permissions with their roles
+  const { update } = await robot.adapter.api.get('permissions.listAll')
+
+  // Set in which all user permission will be saved
+  const userPermissions = new Set()
+
+  for (const perm of update) {
+    // Flag indicating that permission roles are contained in user roles
+    const contain = perm.roles.some(item => user.roles.includes(item))
+
+    if (contain) userPermissions.add(perm._id)
+  }
+
+  return permissions.every(item => userPermissions.has(item))
+}
